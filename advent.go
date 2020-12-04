@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	selectDay(os.Args[1])
+	selectDay(os.Args[0])
 }
 
 func selectDay(day string) {
@@ -22,6 +22,9 @@ func selectDay(day string) {
 	case "3":
 		fmt.Println("Running puzzle from day 3")
 		days.Day3()
+	case "4":
+		fmt.Println("Running puzzle from day 4")
+		days.Day4()
 	default:
 		fmt.Println("Puzzle for Day ", day, " not available yet")
 	}

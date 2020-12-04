@@ -39,7 +39,7 @@ func Day3() {
 		factor = factor * traverseMap(grid, path)
 	}
 
-	fmt.Println("Answer second puzzle: ", factor)
+	fmt.Println("Answer to second puzzle: ", factor)
 }
 
 func traverseMap(grid []string, path slope) int {
