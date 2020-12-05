@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -21,11 +22,13 @@ func main() {
 
 	max := 0
 	scanner := bufio.NewScanner(file)
+	var listOfSeatIds []int
 	for scanner.Scan() {
 		code := scanner.Text()
 
 		row, col := encode(code)
 		seatID := calculateSeatID(row, col)
+		listOfSeatIds = append(listOfSeatIds, seatID)
 
 		if max < seatID {
 			max = seatID
@@ -33,6 +36,19 @@ func main() {
 
 	}
 	fmt.Println("Highest SeatID on the list: ", max)
+
+	sort.Ints(listOfSeatIds)
+	mySeatID := listOfSeatIds[0]
+
+	for _, seatID := range listOfSeatIds {
+		if mySeatID == seatID {
+			mySeatID++
+		} else {
+			break
+		}
+	}
+	fmt.Println("My SeatId should be: ", mySeatID)
+
 }
 
 func calculateSeatID(row int, col int) int {
