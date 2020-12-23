@@ -13,9 +13,10 @@ type Path struct {
 }
 
 var (
-	infinity = math.Inf(1)
-	paths    = make(map[Path]int)
-	cities   = []string{}
+	paths         = make(map[Path]int)
+	cities        []string
+	routes        [][]string
+	shortestRoute []string
 )
 
 func main() {
@@ -39,33 +40,57 @@ func main() {
 			addCityToList(fromCity)
 			addCityToList(toCity)
 			paths[path] = distance
+			path = Path{fromCity: toCity, toCity: fromCity}
+			paths[path] = distance
 		}
 	}
 
-	graph := make([][]Path, len(cities), len(cities))
+	permutations(len(cities))
 
-	for i, fromCity := range cities {
-		for _, toCity := range cities {
-			path := Path{fromCity: fromCity, toCity: toCity}
-			if _, ok := paths[path]; !ok {
-				if fromCity == toCity {
-					paths[path] = 0
-				} else {
-					paths[path] = int(math.Inf((1)))
-				}
+	shortestRoute := math.MaxInt32
+	longestRoute := math.MinInt32
+	for _, route := range routes {
+		var total int = 0
+		for i := 0; i < len(route)-1; i++ {
+			path := Path{fromCity: route[i], toCity: route[i+1]}
+			total = total + paths[path]
+		}
 
+		if shortestRoute > total {
+			shortestRoute = total
+		}
+		if longestRoute < total {
+			longestRoute = total
+		}
+	}
+
+	fmt.Println("Shortest distance found: ", shortestRoute)
+	fmt.Println("Longest distance found: ", longestRoute)
+}
+
+func permutations(n int) {
+	if n == 1 {
+		citiesCopy := make([]string, len(cities))
+		copy(citiesCopy, cities)
+
+		routes = append(routes, citiesCopy)
+	} else {
+		for i := 0; i < n-1; i++ {
+			permutations(n - 1)
+			if n%2 == 0 {
+				swap(cities, i, n-1)
+			} else {
+				swap(cities, 0, n-1)
 			}
-			graph[i] = append(graph[i], path)
-
 		}
+		permutations(n - 1)
 	}
-
-	fmt.Print(len(graph))
 }
 
-func floydWarshall(graph [][]Path) {
-
+func swap(cities []string, i, j int) {
+	cities[i], cities[j] = cities[j], cities[i]
 }
+
 func addCityToList(city string) {
 
 	for _, c := range cities {
