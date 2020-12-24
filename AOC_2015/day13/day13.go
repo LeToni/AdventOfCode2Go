@@ -45,9 +45,21 @@ func main() {
 		}
 	}
 
-	result := findBestSeating()
+	//	result := findBestSeating()
+	// fmt.Println("Result", result)
+	for _, attendee := range happyRules {
+		attendee["Myself"] = 0
+	}
 
-	fmt.Println("Result", result)
+	happyRules["Myself"] = make(map[string]int)
+	for _, attendee := range attendees {
+		happyRules["Myself"][attendee] = 0
+	}
+
+	attendees = append(attendees, "Myself")
+
+	result := findBestSeating()
+	fmt.Println("Result with myself", result)
 }
 
 func permutateSeatingArrangement(n int) {
