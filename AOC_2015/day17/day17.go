@@ -36,8 +36,8 @@ func main() {
 	total := amountPossibleCombinations(containers, capacity)
 	fmt.Println("Amount of possible combos:", total)
 
-	total = amountUniqueCombinations(containers, capacity)
-	fmt.Println("Amount of possible uniqe combos:", total)
+	total = amountUniqueCombinations()
+	fmt.Println("Amount of unique combos:", total)
 }
 
 func amountPossibleCombinations(containers []int, target int) int {
@@ -61,30 +61,39 @@ func amountPossibleCombinations(containers []int, target int) int {
 	return total + amountPossibleCombinations(containers[1:], target) + amountPossibleCombinations(containers[1:], target-containers[0])
 }
 
-func amountUniqueCombinations(containers []int, target int) int {
-	total := 0
-
-	if len(containers) == 2 {
-		if containers[0]+containers[1] == target {
-
-			return 1
-		} else {
-			return 0
+func amountUniqueCombinations() int {
+	combinations := map[int]int{}
+	checkCombination := func(combo []int) {
+		sum := 0
+		for _, container := range combo {
+			sum += container
+		}
+		if sum == capacity {
+			combinations[len(combo)]++
 		}
 	}
 
-	counter := 1
-	for i := 1; i < len(containers); i++ {
-		if containers[0] == containers[i] {
-			counter = counter + 1
+	for num := 1; num <= len(containers); num++ {
+		combo := make([]int, num)
+
+		var nextCombination func(int, int)
+		last := len(combo) - 1
+		nextCombination = func(i, from int) {
+			for j := from; j < len(containers); j++ {
+				combo[i] = containers[j]
+				if i == last {
+					checkCombination(combo)
+				} else {
+					nextCombination(i+1, j+1)
+				}
+			}
+		}
+
+		nextCombination(0, 0)
+
+		if len(combinations) > 0 {
+			return combinations[num]
 		}
 	}
-
-	for i := counter; i < len(containers); i++ {
-		if containers[0]+containers[i] == target && containers[i] != containers[i-1] {
-			total = total + 1
-		}
-	}
-
-	return total + amountUniqueCombinations(containers[counter:], target) + amountUniqueCombinations(containers[1:], target-containers[0])
+	return 0
 }
