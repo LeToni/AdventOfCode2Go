@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"fmt"
 	"os"
 )
 
@@ -15,7 +16,7 @@ const (
 )
 
 var (
-	grid       = make([][]byte, 100)
+	grid       [gridSizeX][gridSizeY]byte
 	directions = []position{
 		{0, -1}, {1, -1}, {1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1},
 	}
@@ -33,9 +34,38 @@ func main() {
 	i := 0
 	for scanner.Scan() {
 		row := scanner.Bytes()
-		grid[i] = row
+		for j := range row {
+			grid[i][j] = row[j]
+		}
 		i++
 	}
+
+	for steps := 0; steps < 100; steps++ {
+		var currentGrid [gridSizeX][gridSizeY]byte
+		for i := range grid {
+			for j := range grid[i] {
+				neighborsLightOn := adjacentNeighborsHaveLightOn(i, j)
+				if grid[i][j] == '#' {
+					if neighborsLightOn == 2 || neighborsLightOn == 3 {
+						currentGrid[i][j] = '#'
+					} else {
+						currentGrid[i][j] = '.'
+					}
+				}
+				if grid[i][j] == '.' {
+					if neighborsLightOn == 3 {
+						currentGrid[i][j] = '#'
+					} else {
+						currentGrid[i][j] = '.'
+					}
+				}
+			}
+		}
+		grid = currentGrid
+	}
+
+	lightsOn := countAmountOfLightsOn()
+	fmt.Println("Total lights on: ", lightsOn)
 
 }
 
