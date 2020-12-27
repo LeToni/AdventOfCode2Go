@@ -5,8 +5,20 @@ import (
 	"os"
 )
 
+type position struct {
+	posX, posY int
+}
+
+const (
+	gridSizeX int = 100
+	gridSizeY int = 100
+)
+
 var (
-	grid = make([][]byte, 100)
+	grid       = make([][]byte, 100)
+	directions = []position{
+		{0, -1}, {1, -1}, {1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1},
+	}
 )
 
 func main() {
@@ -24,4 +36,21 @@ func main() {
 		grid[i] = row
 		i++
 	}
+}
+
+func HasLightOn(p position) bool {
+	if withinGrid(p) && grid[p.posX][p.posY] == '#' {
+		return true
+	} else {
+		return false
+	}
+}
+
+func withinGrid(p position) bool {
+	return !(p.posX < 0 || p.posX >= gridSizeX || p.posY < 0 || p.posY >= gridSizeY)
+}
+
+func neighborAtDirection(x, y int, p position) position {
+	neighbor := position{p.posX + x, p.posY + y}
+	return neighbor
 }
