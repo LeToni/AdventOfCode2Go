@@ -10,11 +10,15 @@ import (
 type rule struct {
 	leftSide, rightSide string
 }
+type electron struct {
+	rightSide string
+}
 
 var (
 	rules     []*rule
 	molecules = make(map[string]bool)
 	molecule  string
+	electrons []*electron
 )
 
 func main() {
@@ -33,14 +37,21 @@ func main() {
 		}
 
 		var inputLeft, inputRight string
-		if n, _ := fmt.Sscanf(input, "%s => %s", &inputLeft, &inputRight); n == 2 {
+		if n, _ := fmt.Sscanf(input, "e => %s", &inputRight); n == 1 {
+			e := electron{rightSide: inputRight}
+			electrons = append(electrons, &e)
+		} else if n, _ := fmt.Sscanf(input, "%s => %s", &inputLeft, &inputRight); n == 2 {
 			inputRule := rule{leftSide: inputLeft, rightSide: inputRight}
 			rules = append(rules, &inputRule)
 		} else {
 			molecule = input
 		}
 	}
+	CreateMolecules()
+	fmt.Println("Amount of distinct molecules that can be created:", len(molecules))
+}
 
+func CreateMolecules() {
 	for _, r := range rules {
 		regex := regexp.MustCompile(r.leftSide)
 
@@ -53,12 +64,13 @@ func main() {
 			newMolecule := make([]byte, len(molecule))
 			copy(newMolecule, molecule)
 			newMolecule = append(newMolecule[:particle[0]], append([]byte(r.rightSide), newMolecule[particle[1]:]...)...)
-			// test := append([]byte(r.rightSide), newMolecule[particle[0]:]...)
-			// // newMolecule = append(newMolecule[:particle[0]])
-			// print(string(test))
 			molecules[string(newMolecule)] = true
 		}
 	}
+}
 
-	fmt.Println(len(molecules))
+func RecreateMolecule() int {
+	steps := 0
+
+	return steps
 }
