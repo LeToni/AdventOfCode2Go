@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"regexp"
 )
 
 type rule struct {
@@ -39,4 +40,25 @@ func main() {
 			molecule = input
 		}
 	}
+
+	for _, r := range rules {
+		regex := regexp.MustCompile(r.leftSide)
+
+		if !regex.MatchString(molecule) {
+			continue
+		}
+		particles := regex.FindAllStringIndex(molecule, -1)
+
+		for _, particle := range particles {
+			newMolecule := make([]byte, len(molecule))
+			copy(newMolecule, molecule)
+			newMolecule = append(newMolecule[:particle[0]], append([]byte(r.rightSide), newMolecule[particle[1]:]...)...)
+			// test := append([]byte(r.rightSide), newMolecule[particle[0]:]...)
+			// // newMolecule = append(newMolecule[:particle[0]])
+			// print(string(test))
+			molecules[string(newMolecule)] = true
+		}
+	}
+
+	fmt.Println(len(molecules))
 }
