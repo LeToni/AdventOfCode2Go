@@ -36,6 +36,7 @@ func main() {
 		grid[i] = row
 		i++
 	}
+
 }
 
 func adjacentNeighborsHaveLightOn(x, y int) int {
@@ -66,4 +67,17 @@ func withinGrid(p position) bool {
 func neighborAtDirection(x, y int, p position) position {
 	neighbor := position{p.posX + x, p.posY + y}
 	return neighbor
+}
+
+func countAmountOfLightsOn() int {
+	count := 0
+
+	for _, row := range grid {
+		for _, light := range row {
+			if light == '#' {
+				count = count + 1
+			}
+		}
+	}
+	return count
 }
