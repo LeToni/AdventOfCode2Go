@@ -44,12 +44,12 @@ func calculateTaskTwo() int {
 		}
 
 		for i := 1; i <= upto; i++ {
-			houseVisitOne[i*elf] += elf * 11
+			houseVisitTwo[i*elf] += elf * 11
 		}
 	}
 
-	for houseNumber := 1; houseNumber < len(houseVisitOne); houseNumber++ {
-		presents := houseVisitOne[houseNumber]
+	for houseNumber := 1; houseNumber < len(houseVisitTwo); houseNumber++ {
+		presents := houseVisitTwo[houseNumber]
 		if presents >= target {
 			return houseNumber
 		}
