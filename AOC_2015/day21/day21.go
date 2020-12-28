@@ -1,7 +1,13 @@
 package main
 
+import (
+	"bufio"
+	"fmt"
+	"os"
+)
+
 type Attacker struct {
-	damage, armor int
+	hp, damage, armor int
 }
 
 type Item struct {
@@ -40,5 +46,25 @@ var (
 )
 
 func main() {
+	file, err := os.Open("input.txt")
+	defer file.Close()
 
+	if err != nil {
+		panic(err)
+	}
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		var (
+			enemyHP, enemyDamage, enemyArmor int
+		)
+		input := scanner.Text()
+		if n, _ := fmt.Sscanf(input, "Hit Points: %d", &enemyHP); n == 1 {
+			Boss.hp = enemyHP
+		} else if n, _ := fmt.Sscanf(input, "Damage: %d", &enemyDamage); n == 1 {
+			Boss.damage = enemyDamage
+		} else if n, _ := fmt.Sscanf(input, "Armor: %d", &enemyArmor); n == 1 {
+			Boss.armor = enemyArmor
+		}
+	}
 }
