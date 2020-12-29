@@ -1,6 +1,6 @@
 package main
 
-type Player struct {
+type Wizard struct {
 	hp, mana, armor int
 }
 
@@ -36,11 +36,8 @@ var (
 		"Recharge": {duration: 5, remaining: 5, active: false},
 	}
 
-	player             Player
-	hpPlayer           int = 50
-	manaPlayer         int = 500
-	boss               Boss
-	hpBoss, bossDamage int
+	wizard Wizard
+	boss   Boss
 )
 
 func main() {
