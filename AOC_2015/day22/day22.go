@@ -17,8 +17,8 @@ type Spell struct {
 }
 
 type Effect struct {
-	Duration, Remaining int
-	Active              bool
+	duration, remaining int
+	active              bool
 }
 
 var (
@@ -28,6 +28,12 @@ var (
 		{name: "Shield", mana: 113, damage: 0, heal: 0, effect: "Shield"},
 		{name: "Poison", mana: 173, damage: 3, heal: 0, effect: "Poison"},
 		{name: "Recharge", mana: 229, damage: 0, heal: 0, effect: "Recharge"},
+	}
+
+	effects = map[string]*Effect{
+		"Shield":   {duration: 6, remaining: 6, active: false},
+		"Poison":   {duration: 6, remaining: 6, active: false},
+		"Recharge": {duration: 5, remaining: 5, active: false},
 	}
 
 	player             Player
