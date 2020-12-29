@@ -21,6 +21,31 @@ type Effect struct {
 	active              bool
 }
 
+func (w *Wizard) isDead() bool {
+	// wizard can be also considered dead if he has not enough mana to cast spell
+	if w.hp <= 0 || w.mana < 53 {
+		return true
+	} else {
+		return false
+	}
+}
+
+func (b *Boss) isDead() bool {
+	if b.hp <= 0 {
+		return true
+	} else {
+		return false
+	}
+}
+
+func (boss *Boss) attacks(wizard *Wizard) {
+	if boss.damage-wizard.armor < 1 {
+		wizard.hp = wizard.hp - 1
+	} else {
+		wizard.hp = wizard.hp - boss.damage
+	}
+}
+
 var (
 	spells = []*Spell{
 		{name: "Magic Missole", mana: 53, damage: 4, heal: 0, effect: "None"},
