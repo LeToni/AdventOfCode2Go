@@ -47,9 +47,17 @@ func (passenger *Passenger) Turn(direction string) {
 	}
 }
 
+type Location struct {
+	x, y int
+}
+
 func distanceToHQ(x, y int) int {
 	return int(math.Abs(float64(x)) + math.Abs(float64(y)))
 }
+
+var (
+	visited = make(map[Location]bool)
+)
 
 func main() {
 	file, err := os.Open("input.txt")
@@ -60,7 +68,7 @@ func main() {
 	}
 
 	passenger := Passenger{x: 0, y: 0, facing: N}
-
+	secondSolved := false
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		input := scanner.Text()
@@ -74,6 +82,15 @@ func main() {
 				passenger.Walk("R", blocks)
 			} else {
 				passenger.Walk("L", blocks)
+			}
+			currentPlace := Location{passenger.x, passenger.y}
+			if _, keyExists := visited[currentPlace]; !keyExists {
+				visited[currentPlace] = true
+				fmt.Println(currentPlace)
+			} else if !secondSolved {
+				fmt.Println("Place with coordinates", currentPlace, "has alreay been visited")
+				fmt.Println("Distance from Landing zone:", distanceToHQ(currentPlace.x, currentPlace.y))
+				secondSolved = true
 			}
 		}
 	}
