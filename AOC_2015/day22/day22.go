@@ -46,6 +46,17 @@ func (boss *Boss) attacks(wizard *Wizard) {
 	}
 }
 
+func EffectTimer() {
+	for _, effect := range effects {
+		if effect.active && effect.remaining > 0 {
+			effect.remaining--
+		} else {
+			effect.remaining = effect.duration
+			effect.active = false
+		}
+	}
+}
+
 var (
 	spells = []*Spell{
 		{name: "Magic Missole", mana: 53, damage: 4, heal: 0, effect: "None"},
