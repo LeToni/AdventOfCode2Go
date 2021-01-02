@@ -37,7 +37,6 @@ func runInstructionsOneTime() {
 }
 
 func runInstructions() {
-	loopExists := true
 
 	for lastModified := 0; lastModified < len(instructions); lastModified++ {
 		if instructions[lastModified].operation == "acc" {
@@ -46,17 +45,28 @@ func runInstructions() {
 			instructions[lastModified].RevertOperation()
 		}
 
-		if !loopExists {
+		i := 0
+		for i >= 0 && i < len(instructions) && instructions[i].executed != true {
+			instruction := instructions[i]
+			instruction.executed = true
+			switch instruction.operation {
+			case "nop":
+				i++
+			case "acc":
+				acc = acc + instruction.memory
+				i++
+			case "jmp":
+				i = i + instruction.memory
+			}
+		}
+
+		if i >= len(instructions) || i < 0 {
 			fmt.Printf("Instruction %d has been modified. Value in accumulator: %d \n", lastModified, acc)
 			break
 		}
 
 		instructions[lastModified].RevertOperation()
-	}
-
-	if loopExists {
-		fmt.Println("Not able to detect loop in instructions")
-		fmt.Println("Loop has not been eliminated")
+		resetProgram()
 	}
 }
 
@@ -64,6 +74,11 @@ func resetInstructions() {
 	for _, instruction := range instructions {
 		instruction.executed = false
 	}
+}
+
+func resetProgram() {
+	resetInstructions()
+	acc = 0
 }
 
 var (
@@ -96,8 +111,6 @@ func main() {
 	}
 	runInstructionsOneTime()
 	fmt.Println("Value currently in accumulator:", acc)
-
-	resetInstructions()
-	acc = 0
+	resetProgram()
 	runInstructions()
 }
