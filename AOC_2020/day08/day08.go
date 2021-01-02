@@ -53,6 +53,11 @@ func runInstructions() {
 
 		instructions[lastModified].RevertOperation()
 	}
+
+	if loopExists {
+		fmt.Println("Not able to detect loop in instructions")
+		fmt.Println("Loop has not been eliminated")
+	}
 }
 
 func resetInstructions() {
