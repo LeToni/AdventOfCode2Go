@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"sort"
 	"strconv"
 )
 
@@ -12,7 +13,8 @@ const (
 )
 
 var (
-	numbers = []int{}
+	numbers       = []int{}
+	invalidNumber int
 )
 
 func main() {
@@ -35,12 +37,43 @@ func main() {
 
 	for i := 0; i < len(numbers)-preamble; i++ {
 		if !isValid(numbers[i+preamble], i, i+preamble) {
-			fmt.Println("First invalid number found:", numbers[i+preamble])
+			invalidNumber = numbers[i+preamble]
+			fmt.Println("First invalid number found:", invalidNumber)
 			break
 		}
 	}
+
+	setStart, setEnd, setFound := findContiguousSet(invalidNumber)
+
+	if !setFound {
+		fmt.Println("No continuous set found")
+	} else {
+		setNumbers := numbers[setStart:setEnd]
+		sort.Ints(setNumbers)
+		weak := setNumbers[0] + setNumbers[len(setNumbers)-1]
+		fmt.Println("Encryption weakness number:", weak)
+	}
 }
 
+func findContiguousSet(number int) (int, int, bool) {
+	sum := 0
+
+	for i := 0; i < len(numbers); i++ {
+		sum = numbers[i]
+		for j := i + 1; j < len(numbers); j++ {
+			sum = sum + numbers[j]
+
+			if sum == invalidNumber {
+				return i, j + 1, true
+			}
+			if sum > invalidNumber {
+				break
+			}
+		}
+	}
+
+	return 0, 0, false
+}
 func isValid(number int, start, end int) bool {
 	eval := false
 
