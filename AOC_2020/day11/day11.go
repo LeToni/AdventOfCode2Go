@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"fmt"
 	"os"
 )
 
@@ -34,6 +35,18 @@ func (position *Position) occupiedSeatNeighbors() int {
 
 func (position *Position) adjacentSeatAt(direction Position) *Position {
 	return &Position{position.x + direction.x, position.y + direction.y}
+}
+
+func countOccupiedSeats() int {
+	count := 0
+	for _, row := range seats {
+		for _, seat := range row {
+			if seat == '#' {
+				count++
+			}
+		}
+	}
+	return count
 }
 
 var (
@@ -74,4 +87,6 @@ func main() {
 		seats = currentSeats
 	}
 
+	occupiedSeats := countOccupiedSeats()
+	fmt.Println("At the end, number of occupied seats:", occupiedSeats)
 }
