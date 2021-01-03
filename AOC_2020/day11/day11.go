@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"fmt"
 	"os"
 )
 
@@ -10,11 +11,11 @@ type Position struct {
 }
 
 func (pos *Position) WithinArea() bool {
-	return !(pos.row > 0 || pos.row >= len(seats) || pos.seat > 0 || pos.seat >= len(seats[pos.row]))
+	return !(pos.row < 0 || pos.row >= len(seatArea) || pos.seat < 0 || pos.seat >= len(seatArea[pos.row]))
 }
 
 func (pos *Position) isOccupied() bool {
-	if seats[pos.row][pos.seat] == '#' {
+	if seatArea[pos.row][pos.seat] == '#' {
 		return true
 	} else {
 		return false
@@ -39,7 +40,7 @@ func (pos *Position) NeighborAt(direction Position) Position {
 
 func countTotalOccupiedSeats() int {
 	count := 0
-	for _, row := range seats {
+	for _, row := range seatArea {
 		for _, seat := range row {
 			if seat == '#' {
 				count = count + 1
@@ -51,10 +52,10 @@ func countTotalOccupiedSeats() int {
 
 var (
 	directions = []Position{
-		{0, -1}, {1, -1}, {1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1},
+		{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1},
 	}
 
-	seats = [][]byte{}
+	seatArea = [][]byte{}
 )
 
 func main() {
@@ -67,6 +68,30 @@ func main() {
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		row := scanner.Bytes()
-		seats = append(seats, row)
+		seatArea = append(seatArea, row)
 	}
+
+	seatsChanged := true
+	for seatsChanged {
+		seatsChanged = false
+		newSeatArea := [][]byte{}
+		for row := range seatArea {
+			newRow := []byte{}
+			for seat, seatStatus := range seatArea[row] {
+				newSeatstatus := seatStatus
+				pos := Position{row, seat}
+				if occupiedSeats := pos.AdjacentNeighborsOccupied(); seatStatus == '#' && occupiedSeats >= 4 {
+					newSeatstatus = 'L'
+					seatsChanged = true
+				} else if seatStatus == 'L' && occupiedSeats == 0 {
+					newSeatstatus = '#'
+					seatsChanged = true
+				}
+				newRow = append(newRow, newSeatstatus)
+			}
+			newSeatArea = append(newSeatArea, newRow)
+		}
+		seatArea = newSeatArea
+	}
+	fmt.Println(countTotalOccupiedSeats())
 }
