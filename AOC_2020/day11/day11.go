@@ -1,5 +1,10 @@
 package main
 
+import (
+	"bufio"
+	"os"
+)
+
 type Position struct {
 	x, y int
 }
@@ -37,3 +42,36 @@ var (
 	}
 	seats [][]byte
 )
+
+func main() {
+	file, err := os.Open("input.txt")
+	defer file.Close()
+	if err != nil {
+		panic(err)
+	}
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		row := scanner.Bytes()
+		seats = append(seats, row)
+	}
+
+	for steps := 0; steps < len(seats); steps++ {
+		currentSeats := [][]byte{}
+		copy(seats, currentSeats)
+
+		for i := range seats {
+			for j := range seats[i] {
+				pos := Position{i, j}
+				occupiedSeats := pos.occupiedSeatNeighbors()
+				if seats[pos.x][pos.y] == 'L' && occupiedSeats == 0 {
+					currentSeats[pos.x][pos.y] = '#'
+				} else if seats[pos.x][pos.y] == '#' && occupiedSeats >= 4 {
+					currentSeats[pos.x][pos.y] = 'L'
+				}
+			}
+		}
+		seats = currentSeats
+	}
+
+}
