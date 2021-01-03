@@ -57,7 +57,7 @@ var (
 )
 
 func main() {
-	file, err := os.Open("input.txt")
+	file, err := os.Open("input_test.txt")
 	defer file.Close()
 	if err != nil {
 		panic(err)
