@@ -69,21 +69,39 @@ func main() {
 		seats = append(seats, row)
 	}
 
-	for steps := 0; steps < len(seats); steps++ {
-		currentSeats := make([][]byte, len(seats))
-		copy(currentSeats, seats)
+	seatsChanged := true
 
+	for seatsChanged {
+		seatsChanged = false
+		currentSeats := [][]byte{}
 		for i := range seats {
+			row := []byte{}
+
 			for j := range seats[i] {
 				pos := Position{i, j}
 				occupiedSeats := pos.occupiedSeatNeighbors()
-				if seats[pos.x][pos.y] == 'L' && occupiedSeats == 0 {
-					currentSeats[pos.x][pos.y] = '#'
-				} else if seats[pos.x][pos.y] == '#' && occupiedSeats >= 4 {
-					currentSeats[pos.x][pos.y] = 'L'
+				if seats[pos.x][pos.y] == '.' {
+					row = append(row, '.')
+				} else if seats[pos.x][pos.y] == 'L' {
+					if occupiedSeats == 0 {
+						row = append(row, '#')
+						seatsChanged = true
+					} else {
+						row = append(row, 'L')
+					}
+				} else if seats[pos.x][pos.y] == '#' {
+					if occupiedSeats >= 4 {
+						row = append(row, 'L')
+						seatsChanged = true
+					} else {
+						row = append(row, '#')
+					}
 				}
+
 			}
+			currentSeats = append(currentSeats, row)
 		}
+
 		seats = currentSeats
 	}
 
