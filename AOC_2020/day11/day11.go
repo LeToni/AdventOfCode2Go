@@ -11,7 +11,7 @@ type Position struct {
 }
 
 func (position *Position) withinSeatingArea() bool {
-	return !(position.x < 0 || position.x >= len(seats) || position.y < len(seats[position.x]))
+	return !(position.x < 0 || position.x >= len(seats) || position.y < 0 || position.y >= len(seats[position.x]))
 }
 
 func (position *Position) isOccupied() bool {
@@ -70,8 +70,8 @@ func main() {
 	}
 
 	for steps := 0; steps < len(seats); steps++ {
-		currentSeats := [][]byte{}
-		copy(seats, currentSeats)
+		currentSeats := make([][]byte, len(seats))
+		copy(currentSeats, seats)
 
 		for i := range seats {
 			for j := range seats[i] {
