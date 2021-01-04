@@ -34,8 +34,32 @@ func (pos *Position) AdjacentNeighborsOccupied() int {
 	return count
 }
 
-func (pos *Position) NeighborAt(direction Position) Position {
-	return Position{pos.row + direction.row, pos.seat + direction.seat}
+func (pos *Position) SeatWithinSightOccupied(direction Position) bool {
+	for i := 1; ; i++ {
+		posSight := Position{pos.row + direction.row*i, pos.seat + direction.seat*i}
+		if !posSight.WithinArea() {
+			return false
+		} else if posSight.WithinArea() && seatArea[posSight.row][posSight.seat] == '#' {
+			return true
+		} else if posSight.WithinArea() && seatArea[posSight.row][posSight.seat] == 'L' {
+			return false
+		}
+	}
+}
+
+func (pos *Position) NeighborsWithinSightOccupied() int {
+	count := 0
+
+	for _, direction := range directions {
+		if pos.SeatWithinSightOccupied(direction) {
+			count = count + 1
+		}
+	}
+	return count
+}
+
+func (pos *Position) NeighborAt(direction Position) *Position {
+	return &Position{pos.row + direction.row, pos.seat + direction.seat}
 }
 
 func countTotalOccupiedSeats() int {
@@ -83,7 +107,7 @@ func main() {
 			for seat, seatStatus := range seatArea[row] {
 				newSeatstatus := seatStatus
 				pos := Position{row, seat}
-				if occupiedSeats := pos.AdjacentNeighborsOccupied(); seatStatus == '#' && occupiedSeats >= 4 {
+				if occupiedSeats := pos.NeighborsWithinSightOccupied(); seatStatus == '#' && occupiedSeats >= 5 {
 					newSeatstatus = 'L'
 					seatsChanged = true
 				} else if seatStatus == 'L' && occupiedSeats == 0 {
