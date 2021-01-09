@@ -2,6 +2,8 @@ package main
 
 import (
 	"io/ioutil"
+	"regexp"
+	"strconv"
 	"strings"
 )
 
@@ -18,6 +20,7 @@ func (inter *Intervall) withinBoundary(number int) bool {
 }
 
 type TicketField struct {
+	name  string
 	rule1 Intervall
 	rule2 Intervall
 }
@@ -31,11 +34,32 @@ func (tf *TicketField) isValid(number int) bool {
 	}
 }
 
+var (
+	ticketFields = []TicketField{}
+)
+
 func main() {
 	file, err := ioutil.ReadFile("input.txt")
 	if err != nil {
 		panic(err)
 	}
 	content := strings.Split(string(file), "\n\n")
+
+	regFieldName := regexp.MustCompile(`(\w+)(\s\w+)*`)
+	regBoundaries := regexp.MustCompile(`(\d+)-(\d+)\sor\s(\d+)-(\d+)`)
+	for _, ticket := range strings.Split(string(content[0]), "\n") {
+		fieldName := regFieldName.FindString(ticket)
+		boundaries := regBoundaries.FindAllStringSubmatch(ticket, -1)[0]
+
+		min1Intervall, _ := strconv.Atoi(boundaries[1])
+		max1Intervall, _ := strconv.Atoi(boundaries[2])
+		min2Intervall, _ := strconv.Atoi(boundaries[3])
+		max2Intervall, _ := strconv.Atoi(boundaries[4])
+		rule1 := Intervall{min1Intervall, max1Intervall}
+		rule2 := Intervall{min2Intervall, max2Intervall}
+
+		newTicketField := TicketField{name: fieldName, rule1: rule1, rule2: rule2}
+		ticketFields = append(ticketFields, newTicketField)
+	}
 
 }
