@@ -34,8 +34,15 @@ func (tf *TicketField) isValid(number int) bool {
 	}
 }
 
+type Ticket struct {
+	numbers []int
+}
+
 var (
-	ticketFields = []TicketField{}
+	ticketFields  = []TicketField{}
+	ownTicket     Ticket
+	nearByTickets = []Ticket{}
+	errorRate     int
 )
 
 func main() {
