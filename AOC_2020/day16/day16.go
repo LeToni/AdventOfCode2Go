@@ -40,12 +40,17 @@ type Ticket struct {
 
 func (ticket *Ticket) CalculateError() {
 	for _, number := range ticket.numbers {
+		validNumber := false
 		for _, tf := range ticketFields {
-			if !tf.isValid(number) {
-				errorRate = errorRate + number
+			if tf.isValid(number) {
+				validNumber = true
 			}
 		}
+		if !validNumber {
+			errorRate = errorRate + number
+		}
 	}
+
 }
 
 var (
@@ -56,7 +61,7 @@ var (
 )
 
 func main() {
-	file, err := ioutil.ReadFile("input.txt")
+	file, err := ioutil.ReadFile("input_test.txt")
 	if err != nil {
 		panic(err)
 	}
