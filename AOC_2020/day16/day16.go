@@ -102,10 +102,13 @@ func main() {
 
 		for _, number := range numbers {
 			n, _ := strconv.Atoi(number)
-			nearbyTicket.numbers = append(ownTicket.numbers, n)
+			nearbyTicket.numbers = append(nearbyTicket.numbers, n)
 		}
 
 		nearByTickets = append(nearByTickets, nearbyTicket)
 	}
 
+	for _, nbt := range nearByTickets {
+		nbt.CalculateError()
+	}
 }
