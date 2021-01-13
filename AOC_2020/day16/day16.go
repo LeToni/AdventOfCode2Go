@@ -62,6 +62,7 @@ var (
 )
 
 func main() {
+	readInput()
 	for _, nbt := range nearByTickets {
 		nbt.CalculateError()
 	}
