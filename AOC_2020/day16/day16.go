@@ -25,7 +25,6 @@ type TicketField struct {
 	rule1 Intervall
 	rule2 Intervall
 	index int
-	pos map[int]bool
 	pos   map[int]bool
 }
 
@@ -45,11 +44,12 @@ type Ticket struct {
 func (ticket *Ticket) CalculateError() {
 	for _, number := range ticket.numbers {
 		validNumber := false
-		for _, tf := range ticketFields {
 		for index, tf := range ticketFields {
 			if tf.isValid(number) {
 				validNumber = true
-			} else {
+			}
+
+			if !tf.isValid(number) {
 				tf.pos[index] = false
 			}
 		}
@@ -69,10 +69,15 @@ var (
 
 func main() {
 	readInput()
+
+	// Task 1
 	for _, nbt := range nearByTickets {
 		nbt.CalculateError()
 	}
 	fmt.Println("Task 1 -> Scanning error rate for nearby tickets:", errorRate)
+
+	// Task 2
+
 }
 
 func readInput() {
@@ -95,7 +100,6 @@ func readInput() {
 		rule1 := Intervall{min1Intervall, max1Intervall}
 		rule2 := Intervall{min2Intervall, max2Intervall}
 
-		newTicketField := TicketField{name: fieldName, rule1: rule1, rule2: rule2}
 		newTicketField := TicketField{name: fieldName, rule1: rule1, rule2: rule2, index: -1, pos: make(map[int]bool)}
 		ticketFields = append(ticketFields, newTicketField)
 	}
@@ -126,6 +130,11 @@ func readInput() {
 			nearbyTicket.numbers = append(nearbyTicket.numbers, n)
 		}
 
+		for _, tf := range ticketFields {
+			for index := range numbers {
+				tf.pos[index] = true
+			}
+		}
 		nearByTickets = append(nearByTickets, nearbyTicket)
 	}
 }
